@@ -1,4 +1,6 @@
 class MoviesController < ApplicationController
+  skip_before_action :authenticate_user!, only: :index
+
   def index
     # Show all results by default - 🚀
     # Make search case insensitive - 🚀
@@ -23,22 +25,9 @@ class MoviesController < ApplicationController
     # @results = PgSearch.multisearch(params[:query]) if params[:query].present?
 
     # SEARCHKICK
+    policy_scope(Movie)
+    policy_scope(TvShow)
     @results = Searchkick.search(models: [Movie, TvShow])
     @results = Searchkick.search(params[:query], models: [Movie, TvShow]) if params[:query].present?
-
   end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
